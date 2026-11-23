@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
+import Assignments from "./pages/Assignments";
 import "./App.css";
 
 function App() {
@@ -13,7 +14,7 @@ function App() {
                 <main className="main-content">
                     <Routes>
                         <Route path="/" element={<Dashboard />} />
-                        <Route path="/assignments" element={<h1>Assignments</h1>} />
+                        <Route path="/assignments" element={<Assignments />} />
                         <Route path="/calendar" element={<h1>Calendar</h1>} />
                         <Route path="/study-tracker" element={<h1>Study Tracker</h1>} />
                         <Route path="/subjects" element={<h1>My Subjects</h1>} />
