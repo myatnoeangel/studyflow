@@ -1,34 +1,26 @@
-import { useEffect, useState } from "react";
-import { getWelcomeMessage } from "./services/api";
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Sidebar from "./components/Sidebar";
+import Dashboard from "./pages/Dashboard";
+import "./App.css";
 
 function App() {
-    const [message, setMessage] = useState("Connecting to StudyFlow...");
-    const [error, setError] = useState("");
-
-    useEffect(() => {
-        async function connectToBackend() {
-            try {
-                const data = await getWelcomeMessage();
-                setMessage(data.message);
-            } catch (err) {
-                setError(err.message);
-            }
-        }
-
-        connectToBackend();
-    }, []);
-
     return (
-        <div>
-            <h1>StudyFlow</h1>
-            <p>Your personal student productivity dashboard.</p>
+        <BrowserRouter>
+            <div className="app-layout">
+                <Sidebar />
 
-            {error ? (
-                <p>{error}</p>
-            ) : (
-                <p>Backend response: {message}</p>
-            )}
-        </div>
+                <main className="main-content">
+                    <Routes>
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/assignments" element={<h1>Assignments</h1>} />
+                        <Route path="/calendar" element={<h1>Calendar</h1>} />
+                        <Route path="/study-tracker" element={<h1>Study Tracker</h1>} />
+                        <Route path="/subjects" element={<h1>My Subjects</h1>} />
+                    </Routes>
+                </main>
+            </div>
+        </BrowserRouter>
     );
 }
 
