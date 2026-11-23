@@ -50,6 +50,16 @@ function Dashboard() {
             new Date(assignment.due_date) >= new Date()
     ).length;
 
+    const upcomingList = assignments
+        .filter(assignment => 
+            assignment.status !== "completed" &&
+            new Date(assignment.due_date) >= new Date()
+        )
+        .sort((a, b) => 
+            new Date(a.due_date) - new Date(b.due_date)
+        )
+        .slice(0, 5);
+
     return (
         <div className="dashboard">
             <header className="dashboard-header">
@@ -83,7 +93,40 @@ function Dashboard() {
 
             <section className="dashboard-section">
                 <h2>Upcoming Assignments</h2>
-                <p>Your upcoming deadlines will appear here.</p>
+
+                {loading ? (
+                    <p>Loading assignments...</p>
+                ) : error ? (
+                    <p>{error}</p>
+                ) : upcomingList.length === 0 ? (
+                    <p>No upcoming assignments. You're all caught up! 🎉</p>
+                ) : (
+                    <div className="assignment-list">
+                        {upcomingList.map(assignment => (
+                            <div className="assignment-item" key={assignment.id}>
+                                <div>
+                                    <h3>{assignment.title}</h3>
+                                    <p>{assignment.subject}</p>
+                                    <p>
+                                        Due: {new Date(
+                                            assignment.due_date
+                                        ).toLocaleDateString("en-GB")}
+                                    </p>
+                                </div>
+
+                                <div className="assignment-meta">
+                                    <span className={`priority ${assignment.priority}`}>
+                                        {assignment.priority}
+                                    </span>
+
+                                    <span className={`status ${assignment.status}`}>
+                                        {assignment.status.replace("_", " ")}
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </section>
         </div>
     );

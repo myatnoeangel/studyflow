@@ -159,3 +159,89 @@
         padding: 16px;
     }
 }
+
+/* Upcoming Assignments */
+
+.assignment-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.assignment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.assignment-item:last-child {
+    border-bottom: none;
+}
+
+.assignment-item h3 {
+    color: var(--text-primary);
+    font-size: 15px;
+    margin: 0 0 6px;
+}
+
+.assignment-item p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin: 4px 0;
+}
+
+.assignment-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.priority,
+.status {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.priority.high {
+    background: #fff0f0;
+    color: #c65b68;
+}
+
+.priority.medium {
+    background: #fff5e8;
+    color: #b77932;
+}
+
+.priority.low {
+    background: #f0f0ff;
+    color: #7770bd;
+}
+
+.status.pending {
+    background: #fdf0f6;
+    color: #b66c91;
+}
+
+.status.in_progress {
+    background: #f0edff;
+    color: #8174bd;
+}
+
+.status.completed {
+    background: #eaf7ef;
+    color: #518b67;
+}
+
+@media (max-width: 600px) {
+    .assignment-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+}
