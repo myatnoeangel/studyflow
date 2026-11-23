@@ -9,6 +9,18 @@ function Assignments() {
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
 
+    const [subjects, setSubjects] = useState([]);
+    const [showForm, setShowForm] = useState(false);
+
+    const [formData, setFormData] = useState({
+        title: "",
+        subject_id: "",
+        description: "",
+        due_date: "",
+        priority: "medium",
+        status: "pending"
+    });
+
     useEffect(() => {
         const fetchAssignments = async () => {
             try {
@@ -47,6 +59,80 @@ function Assignments() {
         return matchesSearch && matchesStatus;
     });
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch(
+                "http://127.0.0.1:5000/api/assignments",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        ...formData,
+                        subject_id: Number(formData.subject_id)
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to create assignment");
+            }
+
+            const newAssignment = await response.json();
+
+            console.log("Assignment created:", newAssignment);
+
+            // Refresh assignments
+            const updatedResponse = await fetch(
+                "http://127.0.0.1:5000/api/assignments"
+            );
+
+            const updatedData = await updatedResponse.json();
+            setAssignments(updatedData);
+
+            // Reset form
+            setFormData({
+                title: "",
+                subject_id: "",
+                description: "",
+                due_date: "",
+                priority: "medium",
+                status: "pending"
+            });
+
+            setShowForm(false);
+
+        } catch (err) {
+            console.error(err);
+            alert("Unable to create assignment.");
+        }
+    };
+
+    useEffect(() => {
+        const fetchSubjects = async () => {
+            try {
+                const response = await fetch(
+                    "http://127.0.0.1:5000/api/subjects"
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch subjects");
+                }
+
+                const data = await response.json();
+                setSubjects(data);
+
+            } catch (err) {
+                console.error("Error fetching subjects:", err);
+            }
+        };
+
+        fetchSubjects();
+    }, []);
+
     return (
         <div className="assignments-page">
             <header className="page-header">
@@ -55,7 +141,10 @@ function Assignments() {
                     <p>Keep track of your coursework and deadlines.</p>
                 </div>
 
-                <button className="add-assignment-btn">
+                <button
+                    className="add-assignment-btn"
+                    onClick={() => setShowForm(true)}
+                >
                     + Add Assignment
                 </button>
             </header>
@@ -78,6 +167,116 @@ function Assignments() {
                     <option value="completed">Completed</option>
                 </select>
             </section>
+
+            {showForm && (
+                <section className="assignment-form-section">
+                    <h2>Add New Assignment</h2>
+
+                    <form onSubmit={handleSubmit}>
+                        <label>Assignment Title</label>
+                        <input
+                            type="text"
+                            value={formData.title}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    title: e.target.value
+                                })
+                            }
+                            placeholder="e.g. Database Coursework"
+                            required
+                        />
+
+                        <label>Subject</label>
+                        <select
+                            value={formData.subject_id}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    subject_id: e.target.value
+                                })
+                            }
+                            required
+                        >
+                            <option value="">Select a subject</option>
+
+                            {subjects.map(subject => (
+                                <option key={subject.id} value={subject.id}>
+                                    {subject.name}
+                                </option>
+                            ))}
+                        </select>
+
+                        <label>Description</label>
+                        <textarea
+                            value={formData.description}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    description: e.target.value
+                                })
+                            }
+                            placeholder="Add some details..."
+                        />
+
+                        <label>Due Date</label>
+                        <input
+                            type="date"
+                            value={formData.due_date}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    due_date: e.target.value
+                                })
+                            }
+                            required
+                        />
+
+                        <label>Priority</label>
+                        <select
+                            value={formData.priority}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    priority: e.target.value
+                                })
+                            }
+                        >
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+
+                        <label>Status</label>
+                        <select
+                            value={formData.status}
+                            onChange={(e) =>
+                                setFormData({
+                                    ...formData,
+                                    status: e.target.value
+                                })
+                            }
+                        >
+                            <option value="pending">Pending</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+
+                        <div className="form-actions">
+                            <button type="submit">
+                                Save Assignment
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => setShowForm(false)}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </section>
+            )}
 
             <section className="assignments-container">
                 {loading ? (

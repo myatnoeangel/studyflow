@@ -359,3 +359,74 @@
         flex-direction: column;
     }
 }
+
+/* Add Assignment Form */
+
+.assignment-form-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 24px;
+}
+
+.assignment-form-section h2 {
+    color: var(--text-primary);
+    font-size: 19px;
+    margin: 0 0 24px;
+}
+
+.assignment-form-section form {
+    display: grid;
+    gap: 12px;
+}
+
+.assignment-form-section label {
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.assignment-form-section input,
+.assignment-form-section select,
+.assignment-form-section textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--surface);
+    color: var(--text-primary);
+    font: inherit;
+}
+
+.assignment-form-section textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.form-actions button,
+.add-assignment-btn {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.add-assignment-btn,
+.form-actions button[type="submit"] {
+    background: #eee9ff;
+    color: #7465ad;
+}
+
+.form-actions button[type="button"] {
+    background: #f5f0f3;
+    color: #806b78;
+}
