@@ -176,5 +176,36 @@ def update_assignment(assignment_id):
             "error": "Unable to update assignment"
         }), 500
 
+
+@app.route("/api/assignments/<int:assignment_id>", methods=["DELETE"])
+def delete_assignment(assignment_id):
+    try:
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+
+                cur.execute("""
+                    DELETE FROM assignments
+                    WHERE assignment_id = %s
+                    RETURNING assignment_id;
+                """, (assignment_id,))
+
+                deleted = cur.fetchone()
+
+                if deleted is None:
+                    return jsonify({
+                        "error": "Assignment not found"
+                    }), 404
+
+                return jsonify({
+                    "message": "Assignment deleted successfully",
+                    "id": deleted[0]
+                })
+
+    except Exception as e:
+        print(f"Database error: {e}")
+        return jsonify({
+            "error": "Unable to delete assignment"
+        }), 500
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

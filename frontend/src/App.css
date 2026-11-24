@@ -430,3 +430,39 @@
     background: #f5f0f3;
     color: #806b78;
 }
+
+/* Assignment Actions */
+
+.assignment-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: 10px;
+}
+
+.assignment-actions button {
+    padding: 7px 13px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.edit-btn {
+    background: #eee9ff;
+    color: #7465ad;
+}
+
+.edit-btn:hover {
+    background: #e3dbff;
+}
+
+.delete-btn {
+    background: #fff0f1;
+    color: #c46f7b;
+}
+
+.delete-btn:hover {
+    background: #ffe1e5;
+}

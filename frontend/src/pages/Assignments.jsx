@@ -12,6 +12,8 @@ function Assignments() {
     const [subjects, setSubjects] = useState([]);
     const [showForm, setShowForm] = useState(false);
 
+    const [editingId, setEditingId] = useState(null);
+
     const [formData, setFormData] = useState({
         title: "",
         subject_id: "",
@@ -62,11 +64,15 @@ function Assignments() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const isEditing = editingId !== null;
+
         try {
             const response = await fetch(
-                "http://127.0.0.1:5000/api/assignments",
+                isEditing
+                    ? `http://127.0.0.1:5000/api/assignments/${editingId}`
+                    : "http://127.0.0.1:5000/api/assignments",
                 {
-                    method: "POST",
+                    method: isEditing ? "PUT" : "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
@@ -78,17 +84,17 @@ function Assignments() {
             );
 
             if (!response.ok) {
-                throw new Error("Failed to create assignment");
+                throw new Error("Failed to save assignment");
             }
-
-            const newAssignment = await response.json();
-
-            console.log("Assignment created:", newAssignment);
 
             // Refresh assignments
             const updatedResponse = await fetch(
                 "http://127.0.0.1:5000/api/assignments"
             );
+
+            if (!updatedResponse.ok) {
+                throw new Error("Failed to refresh assignments");
+            }
 
             const updatedData = await updatedResponse.json();
             setAssignments(updatedData);
@@ -103,11 +109,58 @@ function Assignments() {
                 status: "pending"
             });
 
+            setEditingId(null);
             setShowForm(false);
 
         } catch (err) {
             console.error(err);
-            alert("Unable to create assignment.");
+            alert("Unable to save assignment.");
+        }
+    };
+
+    const handleEdit = (assignment) => {
+        setEditingId(assignment.id);
+
+        setFormData({
+            title: assignment.title,
+            subject_id: assignment.subject_id,
+            description: assignment.description || "",
+            due_date: assignment.due_date
+                ? assignment.due_date.split("T")[0]
+                : "",
+            priority: assignment.priority,
+            status: assignment.status
+        });
+
+        setShowForm(true);
+    };
+
+    const handleDelete = async (id) => {
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this assignment?"
+        );
+
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(
+                `http://127.0.0.1:5000/api/assignments/${id}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to delete assignment");
+            }
+
+            setAssignments(prev =>
+                prev.filter(assignment => assignment.id !== id)
+            );
+
+        } catch (err) {
+            console.error(err);
+            alert("Unable to delete assignment.");
         }
     };
 
@@ -170,7 +223,9 @@ function Assignments() {
 
             {showForm && (
                 <section className="assignment-form-section">
-                    <h2>Add New Assignment</h2>
+                    <h2>
+                        {editingId ? "Edit Assignment" : "Add New Assignment"}
+                    </h2>
 
                     <form onSubmit={handleSubmit}>
                         <label>Assignment Title</label>
@@ -264,12 +319,23 @@ function Assignments() {
 
                         <div className="form-actions">
                             <button type="submit">
-                                Save Assignment
+                                {editingId ? "Save Changes" : "Save Assignment"}
                             </button>
 
                             <button
                                 type="button"
-                                onClick={() => setShowForm(false)}
+                                onClick={() => {
+                                    setShowForm(false);
+                                    setEditingId(null);
+                                    setFormData({
+                                        title: "",
+                                        subject_id: "",
+                                        description: "",
+                                        due_date: "",
+                                        priority: "medium",
+                                        status: "pending"
+                                    });
+                                }}
                             >
                                 Cancel
                             </button>
@@ -309,6 +375,22 @@ function Assignments() {
                                 <span className={`status ${assignment.status}`}>
                                     {assignment.status.replace("_", " ")}
                                 </span>
+
+                                <div className="assignment-actions">
+                                    <button
+                                        onClick={() => handleEdit(assignment)}
+                                        className="edit-btn"
+                                    >
+                                        Edit
+                                    </button>
+
+                                    <button
+                                        onClick={() => handleDelete(assignment.id)}
+                                        className="delete-btn"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
                         </article>
                     ))
