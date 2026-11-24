@@ -23,10 +23,6 @@ function Sidebar() {
                     Calendar
                 </NavLink>
 
-                <NavLink to="/study-tracker" className="nav-link">
-                    Study Tracker
-                </NavLink>
-
                 <p className="nav-heading">WORKSPACE</p>
 
                 <NavLink to="/subjects" className="nav-link">

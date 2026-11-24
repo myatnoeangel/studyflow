@@ -18,7 +18,6 @@ function App() {
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/assignments" element={<Assignments />} />
                         <Route path="/calendar" element={<Calendar />} />
-                        <Route path="/study-tracker" element={<h1>Study Tracker</h1>} />
                         <Route path="/subjects" element={<Subjects />} />
                     </Routes>
                 </main>
