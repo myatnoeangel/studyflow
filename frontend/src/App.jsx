@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import Assignments from "./pages/Assignments";
+import Subjects from "./pages/Subjects";
 import "./App.css";
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
                         <Route path="/assignments" element={<Assignments />} />
                         <Route path="/calendar" element={<h1>Calendar</h1>} />
                         <Route path="/study-tracker" element={<h1>Study Tracker</h1>} />
-                        <Route path="/subjects" element={<h1>My Subjects</h1>} />
+                        <Route path="/subjects" element={<Subjects />} />
                     </Routes>
                 </main>
             </div>
