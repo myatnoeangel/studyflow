@@ -24,9 +24,11 @@ def get_assignments():
                 cur.execute("""
                     SELECT
                         a.assignment_id,
+                        a.subject_id,
                         a.title,
                         a.description,
                         s.subject_name,
+                        s.colour,
                         a.due_date,
                         a.priority,
                         a.status
@@ -43,12 +45,14 @@ def get_assignments():
                 for row in rows:
                     assignments.append({
                         "id": row[0],
-                        "title": row[1],
-                        "description": row[2],
-                        "subject": row[3],
-                        "due_date": row[4].isoformat(),
-                        "priority": row[5],
-                        "status": row[6]
+                        "subject_id": row[1],
+                        "title": row[2],
+                        "description": row[3],
+                        "subject": row[4],
+                        "colour": row[5],
+                        "due_date": row[6].isoformat(),
+                        "priority": row[7],
+                        "status": row[8]
                     })
 
                 return jsonify(assignments)
