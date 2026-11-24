@@ -269,6 +269,7 @@ def update_assignment(assignment_id):
                 cur.execute("""
                     UPDATE assignments
                     SET
+                        subject_id = %s,
                         title = %s,
                         description = %s,
                         due_date = %s,
@@ -277,12 +278,15 @@ def update_assignment(assignment_id):
                     WHERE assignment_id = %s
                     RETURNING assignment_id;
                 """, (
-                    data["title"],
-                    data.get("description"),
-                    data["due_date"],
-                    data["priority"],
-                    data["status"],
-                    assignment_id
+                    (
+                        data["subject_id"],
+                        data["title"],
+                        data.get("description"),
+                        data["due_date"],
+                        data["priority"],
+                        data["status"],
+                        assignment_id
+                    )
                 ))
 
                 updated = cur.fetchone()
